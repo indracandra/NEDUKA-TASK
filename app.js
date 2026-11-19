@@ -7,13 +7,16 @@
   const call=async(name,...args)=>{
     let response;
     try {
-      response=await fetch(API_URL,{
+      const controller=new AbortController();
+      const requestTimer=setTimeout(()=>controller.abort(),20000);
+      try { response=await fetch(API_URL,{
         method:'POST',
         headers:{'Content-Type':'text/plain;charset=utf-8'},
         body:JSON.stringify({action:name,args}),
-        cache:'no-store',redirect:'follow'
-      });
+        cache:'no-store',redirect:'follow',signal:controller.signal
+      }); } finally { clearTimeout(requestTimer); }
     } catch(e) {
+      if(e && e.name==='AbortError') throw new Error('Koneksi ke server terlalu lama (lebih dari 20 detik). Muat ulang halaman dan periksa deployment Apps Script.');
       throw new Error('Tidak dapat menghubungi mesin NEDUKA TASK. Periksa koneksi internet atau deployment Apps Script.');
     }
     let payload;
@@ -28,15 +31,16 @@
   function showAuth(){ $('appShell').classList.add('hidden');$('authScreen').classList.remove('hidden'); }
   function showApp(){ $('authScreen').classList.add('hidden');$('appShell').classList.remove('hidden'); }
   async function init(){
+    loading(true);
     try{
       const initData=await call('getAppInit');state.init=initData;
-      if(!initData.installed){showAuth();renderAuth('notInstalled');loading(false);return;}
-      if(initData.needsAdmin){showAuth();renderAuth('createAdmin');loading(false);return;}
+      if(!initData.installed){showAuth();renderAuth('notInstalled');return;}
+      if(initData.needsAdmin){showAuth();renderAuth('createAdmin');return;}
       const saved=sessionStorage.getItem('nt_token');
-      if(saved){try{const d=await call('getDashboardData',saved);state.token=saved;state.user=d.user;state.data=d;showApp();buildNav();renderPage();loadProfilePhotoOnce();if(state.user.forcePasswordChange)openPasswordModal(true);loading(false);return;}catch(e){sessionStorage.removeItem('nt_token');}}
+      if(saved){try{const d=await call('getDashboardData',saved);state.token=saved;state.user=d.user;state.data=d;showApp();buildNav();renderPage();loadProfilePhotoOnce();if(state.user.forcePasswordChange)openPasswordModal(true);return;}catch(e){sessionStorage.removeItem('nt_token');}}
       showAuth();renderAuth('login');
     }catch(e){showAuth();renderAuth('error',e.message);}
-    loading(false);
+    finally{loading(false);}
   }
   function renderAuth(mode,message=''){
     const card=$('authCard');
@@ -163,6 +167,23 @@
   async function saveProfile(e){e.preventDefault();const f=new FormData(e.target);loading(true);try{const r=await call('updateMyProfile',state.token,{email:f.get('email'),phone:f.get('phone'),address:f.get('address')});toast(r.message);await refreshData();}catch(err){toast(err.message,'error')}finally{loading(false)}}
   async function uploadPhoto(input){if(!input.files||!input.files[0])return;const file=input.files[0];if(!file.type.startsWith('image/'))return toast('Pilih berkas gambar.','error');try{loading(true);const dataUrl=await compressImage(file);const r=await call('updateProfilePhoto',state.token,dataUrl,file.name.replace(/\.[^.]+$/,''));state.profilePhoto=r.photoDataUrl;toast(r.message);renderProfile();}catch(e){toast(e.message,'error')}finally{loading(false);input.value=''}}
   function compressImage(file){return new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(new Error('Foto tidak dapat dibaca.'));reader.onload=()=>{const img=new Image();img.onerror=()=>reject(new Error('Format gambar tidak dapat dibuka.'));img.onload=()=>{const max=900,scale=Math.min(1,max/Math.max(img.width,img.height));const w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');ctx.fillStyle='#ffffff';ctx.fillRect(0,0,w,h);ctx.drawImage(img,0,0,w,h);let q=.82,data=canvas.toDataURL('image/jpeg',q);while(data.length>2.5*1024*1024&&q>.48){q-=.08;data=canvas.toDataURL('image/jpeg',q)}resolve(data)};img.src=reader.result};reader.readAsDataURL(file)})}
+  // Tombol tampil/sembunyikan kata sandi untuk semua formulir, termasuk modal dinamis.
+  function addPasswordEye(input){
+    if(!input || input.dataset.eyeReady==='1') return;
+    input.dataset.eyeReady='1';
+    const wrap=document.createElement('div');wrap.className='password-control';
+    input.parentNode.insertBefore(wrap,input);wrap.appendChild(input);
+    const btn=document.createElement('button');btn.type='button';btn.className='password-eye';btn.setAttribute('aria-label','Tampilkan kata sandi');btn.title='Tampilkan kata sandi';
+    const eye='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></svg>';
+    const off='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 3 18 18M10.6 10.6a2 2 0 0 0 2.8 2.8"/><path d="M9.9 5.2A10.7 10.7 0 0 1 12 5c6.4 0 10 7 10 7a15 15 0 0 1-3.1 3.8M6.2 6.2C3.5 8 2 12 2 12s3.6 7 10 7c1.4 0 2.7-.4 3.8-.9"/></svg>';
+    btn.innerHTML=eye;btn.addEventListener('click',()=>{const show=input.type==='password';input.type=show?'text':'password';btn.innerHTML=show?off:eye;btn.setAttribute('aria-label',show?'Sembunyikan kata sandi':'Tampilkan kata sandi');btn.title=show?'Sembunyikan kata sandi':'Tampilkan kata sandi';input.focus();});wrap.appendChild(btn);
+  }
+  const passwordObserver=new MutationObserver(records=>{for(const record of records){for(const node of record.addedNodes){if(node.nodeType!==1)continue;if(node.matches&&node.matches('input[type="password"]'))addPasswordEye(node);node.querySelectorAll?.('input[type="password"]').forEach(addPasswordEye);}}});
+  passwordObserver.observe(document.body,{childList:true,subtree:true});
+  document.querySelectorAll('input[type="password"]').forEach(addPasswordEye);
+  // Pengaman tambahan: overlay tidak boleh menutupi halaman lebih dari 25 detik.
+  window.setTimeout(()=>{const el=$('loading');if(el&&!el.classList.contains('hidden')){loading(false);toast('Pemuatan terlalu lama. Silakan muat ulang halaman.','error');}},25000);
+
   init();
 
 
