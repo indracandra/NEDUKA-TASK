@@ -1,0 +1,2 @@
+NEDUKA TASK GitHub Pages v1.3.2
+Penyempurnaan tampilan, identitas logo resmi SMP Negeri 2 Kawali, dan cache frontend. Backend tetap v1.3.0.

@@ -1,0 +1,11 @@
+{
+  "name": "NEDUKA TASK",
+  "short_name": "NEDUKA TASK",
+  "description": "Ruang Belajar Digital SMP Negeri 2 Kawali",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f4f6fb",
+  "theme_color": "#172554",
+  "icons": [{"src":"assets/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}
