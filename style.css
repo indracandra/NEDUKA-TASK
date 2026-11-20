@@ -89,3 +89,7 @@ body.auth-mode .auth-card{margin-top:0;margin-bottom:0}
   body.auth-mode .auth-card-wrap{min-height:0;padding:18px 13px 34px;align-content:start;align-items:start}
   body.auth-mode .auth-card{width:min(470px,100%)}
 }
+
+/* v1.3.8: interaksi ruang mata pelajaran */
+.subject-card-action{width:100%;font:inherit;text-align:left;cursor:pointer;transition:transform .16s ease,box-shadow .16s ease,border-color .16s ease}.subject-card-action:hover,.subject-card-action:focus-visible{transform:translateY(-2px);box-shadow:0 9px 22px rgba(39,61,130,.12);outline:none;border-color:#9aabf6}.subject-workspace-hero{display:flex;align-items:center;gap:18px;padding:24px;border:1px solid;border-radius:17px;margin-bottom:16px}.subject-workspace-hero h2{margin:5px 0;font-size:20px}.subject-workspace-hero p{margin:0;color:#697895;font-size:12px;line-height:1.6}.subject-workspace-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.subject-workspace-grid .panel{min-width:0}.subject-workspace-grid h3{font-size:14px;margin:8px 0}.subject-workspace-grid .student-facts{margin-top:12px}
+@media(max-width:650px){.subject-workspace-grid{grid-template-columns:1fr}.subject-workspace-hero{align-items:flex-start;padding:17px}.subject-workspace-hero h2{font-size:17px}}
