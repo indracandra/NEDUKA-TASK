@@ -9,6 +9,13 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="style.css">
+  <style>
+    .task-filter-grid{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:10px;margin:14px 0 8px}
+    .task-filter-grid .input{width:100%;min-width:0}
+    @media(max-width:900px){.task-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:560px){.task-filter-grid{grid-template-columns:1fr}}
+  </style>
+
 </head>
 <body>
   <div id="loading" class="loading"><div class="loading-box"><span class="spinner"></span>Memuat NEDUKA TASK...</div></div>
@@ -35,7 +42,7 @@
       <div class="brand"><div class="brand-mark"><img src="assets/logo-sekolah.png" alt="Logo SMP Negeri 2 Kawali"></div><div><div class="brand-name">NEDUKA TASK</div><div class="brand-sub">LEARNING MANAGEMENT</div></div></div>
       <div class="nav-label">MENU UTAMA</div>
       <nav class="nav" id="navMenu"></nav>
-      <div class="sidebar-bottom">Dibangun untuk pembelajaran yang lebih terarah.<br><span id="sidebarVersion">Versi 1.7.5</span></div>
+      <div class="sidebar-bottom">Dibangun untuk pembelajaran yang lebih terarah.<br><span id="sidebarVersion">Versi 1.7.7</span></div>
     </aside>
     <main class="main">
       <header class="topbar">
