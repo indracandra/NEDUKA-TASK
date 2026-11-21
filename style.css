@@ -102,3 +102,6 @@ body.auth-mode .auth-card{margin-top:0;margin-bottom:0}
 @media(max-width:650px){.assessment-entry-grid{grid-template-columns:1fr}.report-stats{grid-template-columns:1fr 1fr}.report-stats .stat-card{padding:12px}.report-stats .stat-value{font-size:20px}}
 
 .group-member-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin:10px 0 14px}.check-row{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line,#e4e9f2);border-radius:10px;font-size:13px}.check-row input{accent-color:#5965df}
+
+/* NEDUKA TASK v1.7.1: riwayat pengumpulan dan pratinjau bukti */
+.proof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:9px;margin-top:10px}.proof-preview-btn{display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;border:1px solid var(--line);background:#f8faff;border-radius:11px;padding:11px;min-width:0;color:var(--ink)}.proof-preview-btn span{font-size:20px}.proof-preview-btn b{font-size:10px;overflow-wrap:anywhere}.proof-preview-btn small{font-size:9px;color:var(--blue)}.submission-history-card{padding:13px;margin:9px 0}.submission-history-card p{white-space:pre-wrap;overflow-wrap:anywhere}.modal-preview-frame{width:100%;height:65dvh;border:0;border-radius:10px}
