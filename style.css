@@ -179,3 +179,11 @@ body.auth-mode .auth-card{margin-top:0;margin-bottom:0}
 .assessment-entry-grid .score-entry summary span{float:right;color:var(--muted);font-weight:500;}
 .assessment-group-box{border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:12px;background:#fbfcff;}
 @media(max-width:760px){.assessment-main-panel{padding:12px;}.assessment-scope-filters{grid-template-columns:1fr;gap:8px;padding:10px;}.assessment-segment-head{align-items:stretch;flex-direction:column;}.assessment-filter-row{min-width:0;width:100%;}.assessment-search,.assessment-select{flex:1;width:50%;}.assessment-entry-grid{grid-template-columns:1fr;}.assessment-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}.assessment-tab{padding:9px 5px;font-size:10px;}}
+
+/* v1.7.14: daftar bukti dan segmen siswa belum mengumpulkan */
+.submission-status-filter{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 14px;padding:10px;background:#f7f9fe;border:1px solid var(--line,#e5eaf3);border-radius:12px}
+.submission-student-list{grid-template-columns:1fr;max-height:58dvh;overflow:auto}
+.submission-history-card.is-submitted .proof-grid{margin-top:12px}
+.assessment-tabs{align-items:center}
+.assessment-tab{white-space:nowrap}
+@media(max-width:760px){.submission-student-list{grid-template-columns:1fr;max-height:60dvh}.submission-status-filter .btn{flex:1 1 auto}.assessment-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}.assessment-tab{white-space:normal}}
