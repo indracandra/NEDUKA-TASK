@@ -105,3 +105,34 @@ body.auth-mode .auth-card{margin-top:0;margin-bottom:0}
 
 /* NEDUKA TASK v1.7.1: riwayat pengumpulan dan pratinjau bukti */
 .proof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(135px,1fr));gap:9px;margin-top:10px}.proof-preview-btn{display:flex;flex-direction:column;align-items:flex-start;gap:5px;text-align:left;border:1px solid var(--line);background:#f8faff;border-radius:11px;padding:11px;min-width:0;color:var(--ink)}.proof-preview-btn span{font-size:20px}.proof-preview-btn b{font-size:10px;overflow-wrap:anywhere}.proof-preview-btn small{font-size:9px;color:var(--blue)}.submission-history-card{padding:13px;margin:9px 0}.submission-history-card p{white-space:pre-wrap;overflow-wrap:anywhere}.modal-preview-frame{width:100%;height:65dvh;border:0;border-radius:10px}
+
+/* v1.7.11 — ruang kerja Penilaian Akademik ringkas berbasis tab */
+.assessment-main-panel{padding:14px;min-height:0}
+.assessment-global-filters{padding:0 0 12px;border-bottom:1px solid var(--line);margin-bottom:12px}
+.assessment-tabs{display:flex;gap:7px;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:10px;margin-bottom:12px}
+.assessment-tab{border:1px solid var(--line);background:#f8faff;color:#52617c;border-radius:10px;padding:9px 13px;font-size:11px;font-weight:800}
+.assessment-tab.active{background:#eaf0ff;border-color:#aebeff;color:#2947b8}
+.assessment-tab span{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;margin-left:5px;border-radius:20px;background:#fff;font-size:9px}
+.assessment-segment{min-width:0}
+.assessment-segment-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
+.assessment-segment-head>b,.assessment-segment-head>div:first-child>b{font-size:13px}
+.assessment-segment-head small{display:block;color:var(--muted);font-size:10px;margin-top:4px}
+.assessment-filter-row{display:flex;gap:7px;min-width:min(420px,55%)}
+.assessment-search{width:min(240px,100%);font-size:11px;padding:9px 10px}
+.assessment-select{width:min(190px,100%);font-size:11px;padding:9px 10px}
+.assessment-request-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
+.assessment-request{border:1px solid var(--line);border-radius:12px;padding:11px;display:grid;gap:7px;min-width:0}
+.assessment-request-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.assessment-request-top b{font-size:12px}
+.assessment-request-top strong{font-size:18px;color:#253b8f}
+.assessment-request .muted{font-size:10px;line-height:1.4}
+.assessment-score-table{max-height:clamp(230px,48vh,430px);overflow:auto}
+.assessment-score-table .data-table{min-width:720px}
+.assessment-entry-grid{grid-template-columns:repeat(2,minmax(0,1fr));max-height:clamp(230px,48vh,430px);overflow:auto;padding:2px 4px 2px 0}
+.score-entry summary{display:flex;justify-content:space-between;gap:8px}
+.score-entry summary span{color:var(--muted);font-weight:500}
+.assessment-group-box{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:12px;background:#fbfcff}
+.assessment-group-box summary{font-size:11px;font-weight:800;cursor:pointer}
+.assessment-group-members{max-height:160px;overflow:auto;grid-template-columns:repeat(3,minmax(0,1fr))}
+.assessment-group-members .check-row{font-size:10px;padding:6px}
+@media(max-width:760px){.assessment-segment-head{align-items:stretch;flex-direction:column}.assessment-filter-row{min-width:0;width:100%}.assessment-search,.assessment-select{flex:1;width:50%}.assessment-request-grid{grid-template-columns:1fr}.assessment-entry-grid{grid-template-columns:1fr}.assessment-group-members{grid-template-columns:repeat(2,minmax(0,1fr))}.assessment-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}.assessment-tab{padding:9px 5px;font-size:10px}}
