@@ -208,3 +208,14 @@ body.auth-mode .auth-card{margin-top:0;margin-bottom:0}
 
 /* Verifikasi: satu baris per siswa, setiap pengajuan tetap memiliki aksi tersendiri. */
 .verify-request-stack{display:flex;flex-direction:column;gap:8px;min-width:190px}.verify-request-line{display:flex;align-items:center;min-height:34px;padding:3px 0;border-bottom:1px solid var(--border,#e8ebf2)}.verify-request-line:last-child{border-bottom:0}.verify-request-line .row-actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}.verify-request-line .btn{white-space:nowrap}
+
+/* NEDUKA TASK v1.7.17 — verifikasi satu baris per siswa dan aksi per tugas */
+.verify-student-table th:last-child,.verify-student-table td:last-child{width:130px;text-align:center}
+.verify-student-table td{vertical-align:middle}
+.verify-student-table .btn{min-width:82px}
+.proof-review-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:14px;padding:13px 14px;border:1px solid #dfe6f4;border-radius:12px;background:#f7f9ff}
+.proof-review-bar>div:first-child{display:grid;gap:4px}
+.proof-review-bar>div:first-child b{font-size:13px;color:var(--ink)}
+.proof-review-bar>div:first-child small{font-size:10px;color:var(--muted)}
+.proof-review-bar .row-actions{display:flex;gap:7px;flex-wrap:wrap}
+@media(max-width:650px){.verify-student-table{min-width:560px}.proof-review-bar{align-items:stretch;flex-direction:column}.proof-review-bar .row-actions .btn{flex:1}}
