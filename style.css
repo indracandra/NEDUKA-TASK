@@ -205,3 +205,6 @@ body.auth-mode .auth-card{margin-top:0;margin-bottom:0}
 .proof-student-task-head{padding:10px 12px;background:#f5f7fc;border-radius:10px;margin-bottom:10px}
 .proof-student-task-head b{font-size:13px}
 @media(max-width:650px){.proof-matrix-list{max-height:48dvh}.proof-matrix-task-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.proof-task-chip{padding:8px;font-size:9px}.proof-matrix-student{padding:10px}}
+
+/* Verifikasi: satu baris per siswa, setiap pengajuan tetap memiliki aksi tersendiri. */
+.verify-request-stack{display:flex;flex-direction:column;gap:8px;min-width:190px}.verify-request-line{display:flex;align-items:center;min-height:34px;padding:3px 0;border-bottom:1px solid var(--border,#e8ebf2)}.verify-request-line:last-child{border-bottom:0}.verify-request-line .row-actions{display:flex;align-items:center;gap:6px;flex-wrap:nowrap}.verify-request-line .btn{white-space:nowrap}
