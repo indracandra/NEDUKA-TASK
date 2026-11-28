@@ -27,7 +27,7 @@
     try { payload=await response.json(); }
     catch(e) { throw new Error('Respons Apps Script tidak dapat dibaca. Pastikan Web App telah di-deploy dengan akses Anyone.'); }
     if(!payload || payload.ok!==true) throw new Error(payload&&payload.error?payload.error:'Permintaan tidak berhasil.');
-    if(payload.version && payload.version!=='1.7.19') throw new Error('Versi backend '+payload.version+' tidak cocok. Diperlukan 1.7.19.');
+    if(payload.version && payload.version!=='1.7.21') throw new Error('Versi backend '+payload.version+' tidak cocok. Diperlukan 1.7.21.');
     return payload.data;
   };
   function loading(on){$('loading').classList.toggle('hidden',!on)}
@@ -311,6 +311,22 @@
 
 
   async function loadStudentDashboardProgress(){try{const d=await call('getStudentReport',state.token,'','',((state.data.student||{}).periodId||''));const r=d.report,box=$('studentProgressPanel');if(!box)return;if(!r){box.innerHTML='<div class="panel-title">Progres belajar</div><div class="empty">Grafik dan ranking akan tampil setelah nilai mulai tersedia.</div>';return;}const categories=['TUGAS','PRAKTIK','PAS/PAT','LAINNYA'];const vals=categories.map(cat=>{const arr=d.columns.map((c,i)=>({c,v:r.scores[i]?.score})).filter(x=>String(x.c.category).toUpperCase()===cat&&x.v!==null&&x.v!==undefined);return arr.length?arr.reduce((a,x)=>a+Number(x.v),0)/arr.length:0});const max=Math.max(100,...vals),pts=vals.map((v,i)=>{const a=(-Math.PI/2)+(i*2*Math.PI/4),rr=25+(v/max)*70;return `${110+rr*Math.cos(a)},${95+rr*Math.sin(a)}`}).join(' ');box.innerHTML=`<div class="panel-head"><div><div class="panel-title">Progres belajar Anda</div><div class="panel-desc">Grafik berdasarkan rata-rata komponen nilai yang sudah terisi.</div></div><span class="badge badge-active">🏆 Peringkat ${r.rank||'—'}</span></div><div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap"><svg viewBox="0 0 220 190" style="width:220px;max-width:100%;height:auto"><polygon points="110,25 180,95 110,165 40,95" fill="none" stroke="#dbe3f2"/><polygon points="110,48 157,95 110,142 63,95" fill="none" stroke="#e7ecf5"/><polygon points="${pts}" fill="rgba(82,91,220,.22)" stroke="#5965df" stroke-width="2"/><text x="110" y="13" text-anchor="middle" font-size="9" fill="#63718c">Tugas/PR</text><text x="198" y="98" text-anchor="middle" font-size="9" fill="#63718c">Praktik</text><text x="110" y="183" text-anchor="middle" font-size="9" fill="#63718c">PAS/PAT</text><text x="20" y="98" text-anchor="middle" font-size="9" fill="#63718c">Lainnya</text></svg><div><div class="stat-label">Rata-rata nilai</div><div class="stat-value">${r.average??'—'}</div><div class="stat-label" style="margin-top:8px">Predikat</div><b>${esc(r.predicate||'Belum ada nilai')}</b></div></div>`}catch(e){const b=$('studentProgressPanel');if(b)b.innerHTML=`<div class="empty">${esc(e.message)}</div>`}}
+  async function loadEvidenceRecoveryPanel(){
+    const old=document.getElementById('evidenceRecoveryPanel'); if(old)old.remove();
+    try{
+      const rows=await call('getMyEvidenceRecovery',state.token);
+      if(!Array.isArray(rows)||!rows.length)return;
+      const html=`<section class="panel" id="evidenceRecoveryPanel" style="margin:0 0 14px;border:1px solid #e4b65c;background:#fffaf0"><div class="panel-head"><div><span class="eyebrow-label">PEMULIHAN BUKTI TUGAS</span><div class="panel-title">Ada ${rows.length} bukti pekerjaan yang perlu diunggah ulang</div><div class="panel-desc">Riwayat pengumpulan lama tetap tersimpan. Unggah kembali file agar guru dapat membukanya.</div></div><span class="badge badge-pending">Perlu tindakan</span></div><div class="recovery-list">${rows.map(r=>`<form class="recovery-item" onsubmit="submitEvidenceRecovery(event,'${esc(r.id)}')" style="padding:12px 0;border-top:1px solid #eee"><b>${esc(r.taskTitle||'Tugas sebelumnya')}</b><small class="muted" style="display:block">${esc(r.fileName||'Bukti pekerjaan')} · Riwayat ${esc(r.submittedAt||'tersimpan')}</small><div class="form-grid" style="margin-top:9px"><div class="field"><label>Pilih bukti pengganti</label><input type="file" name="proof" accept="image/*,.pdf,.doc,.docx" required></div><div style="display:flex;align-items:end"><button class="btn btn-primary btn-small" type="submit">Unggah ulang bukti</button></div></div></form>`).join('')}</div></section>`;
+      const overview=document.querySelector('.student-overview'); if(overview)overview.insertAdjacentHTML('afterend',html);
+    }catch(e){console.warn('Pemulihan bukti belum dapat dimuat:',e.message||e);}
+  }
+  async function submitEvidenceRecovery(e,recoveryId){
+    e.preventDefault();const input=e.target.elements.proof,file=input&&input.files&&input.files[0];if(!file)return toast('Pilih file bukti terlebih dahulu.','error');
+    loading(true);
+    try{const prepared=await prepareProofFile(file);const r=await call('reuploadMissingEvidence',state.token,recoveryId,prepared);toast(r.message);await loadEvidenceRecoveryPanel();}
+    catch(err){toast(err.message||'Bukti gagal diunggah ulang.','error');}
+    finally{loading(false);}
+  }
   function renderHome(){
     const d=state.data||{};const role=state.user.role;
     if(role==='SISWA'){
@@ -330,6 +346,7 @@
         </div>
         <section class="panel" id="studentProgressPanel" style="margin-bottom:14px"><div class="empty">Memuat grafik perkembangan dan peringkat...</div></section><section class="panel subjects-panel"><div class="panel-head"><div><div class="panel-title">Mata pelajaran Anda</div><div class="panel-desc">Dua ruang belajar awal NEDUKA TASK</div></div><span class="section-counter">${subjects.length} mata pelajaran</span></div><div class="subject-grid student-subject-grid">${subjects.length?subjects.map((x,i)=>`<button type="button" class="subject-card subject-card-action ${i%2?'subject-purple':'subject-blue'}" onclick="openSubject('${esc(x.id)}')" aria-label="Buka ruang ${esc(x.name)}"><div class="subject-symbol">${x.code==='INF'?'⌘':'A'}</div><div><span class="subject-code">${esc(x.code||'SUBJEK')}</span><h3>${esc(x.name)}</h3><p>${x.code==='INF'?'Berpikir logis, kreatif, dan terampil menggunakan teknologi.':'Mengembangkan kemampuan berkomunikasi dalam Bahasa Inggris.'}</p></div><span class="subject-status">Buka ruang →</span></button>`).join(''):'<div class="empty">Mata pelajaran belum tersedia.</div>'}</div></section>`;
       loadStudentDashboardProgress();
+      loadEvidenceRecoveryPanel();
       return;
     }
     const c=d.counts||{};
